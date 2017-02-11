@@ -1,0 +1,22 @@
+ 
+- Internet connection
+    - Connect to internet - MQTT
+    - send JSON (humidity, temperature, time sent to the website )
+    - find out how to send data to website
+    - accept JSON for profile
+
+
+ - Website
+    - Bootstrap + template
+    - graph with statistics - updated every minute + exact values for current temp and humidity 
+    - status - ON or OFF
+    - plant profile
+    - accept JSON 
+    - send JSON for profile
+
+
+
+
+
+Sensors to do:
+    - read the last bit of the temperature sensor in order to check if data is valid

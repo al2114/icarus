@@ -1,3 +1,9 @@
+## Screen
+
+```
+screen /dev/tty* 115200
+```
+
 ## Uploading
 
 ```
@@ -20,3 +26,11 @@ readfrom_mem(bus_addr,reg_addr,n)
  - Opens write comm with slave at bus_addr, send reg_addr, switch to read mode, read n bytes
  - Returns byte_array of n bytes
 ```
+
+## MQTT
+- MQTT documentation
+http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html
+
+- MQTT micropython
+https://github.com/micropython/micropython-lib/tree/master/umqtt.simple
+
