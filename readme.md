@@ -1,3 +1,35 @@
+## JSON
+
+embedded to server - topic `esys/icarus/status`
+```
+{
+    time: "str"
+    temp: float
+    hum: float
+    plant: "str"
+}
+```
+
+
+server to embedded - topic `esys/icarus/params`
+```
+{
+    time: "str"
+    temp: float
+    hum: float
+    plant: "s"
+}
+```
+Note: sensor should get start time when it initializes and track its own time
+
+embedded to server alarm - topic `esys/icarus/alarm`
+```
+{
+    alarm: "str"    # Error msg
+}
+```
+
+
 ## Screen
 
 ```
@@ -33,4 +65,27 @@ http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-
 
 - MQTT micropython
 https://github.com/micropython/micropython-lib/tree/master/umqtt.simple
+
+```
+client = MQTTClient(CLIENT_ID,BROKER_ADDRESS)
+client.connect()
+
+client.publish(TOPIC,bytes(data,'utf-8'))
+
+```
+
+## Sensors
+- Humidity
+    datasheet http://akizukidenshi.com/download/ds/aosong/AM2302.pdf
+    micropython https://adafruit-micropython.readthedocs.io/en/latest/docs/esp8266/tutorial/dht.html
+ 
+ - Temperature
+    datasheet http://www.ti.com/lit/ds/symlink/tmp007.pdf
+
+
+## ESP8266
+ - MicroPython https://docs.micropython.org/en/latest/esp8266/esp8266/quickref.html
+ - Pins https://learn.adafruit.com/adafruit-feather-huzzah-esp8266/pinouts
+ - Documentation https://cdn-learn.adafruit.com/downloads/pdf/adafruit-feather-huzzah-esp8266.pdf
+ - https://learn.adafruit.com/adafruit-feather-huzzah-esp8266?view=all
 

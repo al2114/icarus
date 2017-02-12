@@ -1,9 +1,10 @@
  
 - Internet connection
-    - Connect to internet - MQTT
-    - send JSON (humidity, temperature, time sent to the website )
-    - find out how to send data to website
-    - accept JSON for profile
+    - Connect to internet - MQTT - DONE
+    - find out how to send data to website - DONE
+    - send JSON (humidity, temperature, time sent to the website ) - DONE
+
+    - listen to JSON for new profile
 
 
  - Website
@@ -16,7 +17,18 @@
 
 
 
+Questions:
+    - how often should we send data
+    - what type of history do we store on the device - this should be determined by the types of failure we want to report
+    - should we have
 
 
-Sensors to do:
-    - read the last bit of the temperature sensor in order to check if data is valid
+
+NIKOLAY TO DO:
+    - sort out time problem
+    - decide on period to send data
+    - decide on period to run loop
+    - write implementation for controlling humidity
+    - any init data to be processed?
+
+    - test that listening for a profile does not block other actions in the loop
