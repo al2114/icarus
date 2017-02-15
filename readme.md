@@ -23,7 +23,7 @@ server to embedded - topic `esys/icarus/params`
 server to embedded toggle on/off -  topic 'esys/icarus/power'
 ```
 {
-    power: "str"
+    power: int
 }
 ```
 
