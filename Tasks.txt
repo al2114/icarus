@@ -32,3 +32,7 @@ NIKOLAY TO DO:
     - any init data to be processed?
 
     - test that listening for a profile does not block other actions in the loop
+
+
+
+    - data frequency - 5sec

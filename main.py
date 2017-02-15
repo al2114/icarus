@@ -146,6 +146,7 @@ def init():
     print("LEDs initialized")
 
     #Setup network
+    networkSetup("John's iPhone", "icrsislife2k16")
     networkSetup()
     print("Connected to network")
 
