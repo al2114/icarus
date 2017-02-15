@@ -144,6 +144,8 @@ class GardenController():
         _yellow = None           # yellow LED
         _red = None              # red LED
 
+        _humidifier = None        # humidifier
+
         _target = {}           # target parameters
 
 
@@ -170,6 +172,10 @@ class GardenController():
         self._red = initLED(LED_RED)
         print("LEDs initialized")
 
+        # Init Humidifier
+        self._humidifier = machine.Pin(14, machine.Pin.OUT, value=1)
+        print("Humidifier initialized")
+
         #Setup network
         networkSetup("John's iPhone", "icrsislife2k16")
         #networkSetup()
@@ -192,7 +198,7 @@ class GardenController():
     def publishAlarm(self, alarm_msg):
         data = {}
         data[JSON_ALARM] = alarm_msg
-        mqtt_client.publish(ALARM_TOPIC, bytes(data,'utf-8'))
+        self.mqtt_client.publish(ALARM_TOPIC, bytes(data,'utf-8'))
 
 
     def _bytes2temp(self, byte_list):
@@ -207,20 +213,20 @@ class GardenController():
 
     def getTemp(self):
         try:
-            temp_raw = self._i2c.readfrom_mem(temp_sensor,3,2)
+            temp_raw = self._i2c.readfrom_mem(self._temp_sensor,3,2)
             temp = self._bytes2temp(temp_raw)
             return temp
         except OSError:
-            publishAlarm("Problem with Temperature Sensor")
+            self.publishAlarm("Problem with Temperature Sensor")
             raise
 
     def getHumidity(self):
         try:
-            _hum_sensor.measure()
+            self._hum_sensor.measure()
             #hum_sensor.temperature()
-            return _hum_sensor.humidity()
+            return self._hum_sensor.humidity()
         except OSError:
-            publishAlarm("Problem with Humidity Sensor")
+            self.publishAlarm("Problem with Humidity Sensor")
             raise
 
 
@@ -246,6 +252,11 @@ class GardenController():
             LED.duty(int(temp/TEMP_MAX*LED_FREQ))
         else:
             LED.duty(0)
+
+    def _toggleHum(self):
+        self._humidifier.low()
+        sleep(0.5)
+        self._humidifier.high()       
 
 
     def controlTemp(self):
@@ -274,10 +285,10 @@ class GardenController():
 
         if (self.getHumidity() < target_min) and  (not isHumidifier):
             isHumidifier =  not isHumidifier
-            humdifier() #dummy humidifier on/off
+            self._toggleHum() #dummy humidifier on/off
         elif (self.getHumidity() >= target_max) and isHumidifier:
             isHumidifier = not isHumidifier
-            humdifier()
+            self._toggleHum()
 
     
     def processParams(self, topic, msg):
@@ -285,6 +296,31 @@ class GardenController():
         self._target = msg
         self._target[JSON_TEMP] = float(self._target[JSON_TEMP])
         self._target[JSON_HUM] = float(self._target[JSON_HUM])
+
+    def test(self):
+        print('Starting Test')
+
+        print('Testing Sensors')
+        print('Test1: Temp = %f', self.getTemp())
+        print('Test2: Humidity = %f', self.getHumidity())
+
+        print('Testing Peripherals')
+        print('Test4: LEDs - Please check manually')
+        self._red.high()
+        sleep(1)
+        self._green.high()
+        sleep(1)
+        self._yellow.high()
+        sleep(1)
+        print('Test5: Humidifier - Please check manually')
+        self._toggleHum()
+        sleep(5)
+        self._toggleHum()
+
+        print('All hardware tests complete!')
+
+        print('Sending MQTT JSON message. Please confirm')
+        self.publishStatus()
 
 
 def main():
@@ -299,8 +335,10 @@ def main():
     publish_timer.init(period=PUBLISH_FREQUENCY, mode=machine.Timer.PERIODIC, callback=lambda: garden.publishStatus())
 
     # Subscribe to topic to listen for new instructions
-    garden.mqtt_client.set_callback()
+    garden.mqtt_client.set_callback(garden.processParams)
     garden.mqtt_client.subscribe(PARAMS_TOPIC)
+
+    garden.test()
 
     # Monitor performance
     while True:
@@ -323,9 +361,9 @@ def main():
         time.sleep(CONTROL_FREQUENCY)
 
         # Average readings and publish status
-        temp = getTemp()
-        hum = getHumidity()
-        publishStatus()
+        temp = garden.getTemp()
+        hum = garden.getHumidity()
+        garden.publishStatus()
 
 
     # Disconnect from server
