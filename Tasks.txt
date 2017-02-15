@@ -24,15 +24,16 @@ Questions:
 
 
 
-NIKOLAY TO DO:
-    - sort out time problem
-    - decide on period to send data
-    - decide on period to run loop
-    - write implementation for controlling humidity
-    - any init data to be processed?
+FINAL SUBMISSION:
+    - both syncronize time
+
+
+DEMO TO DO:
+    - test all functionality operation
+    - set humidity parameters
+    - make sure to get parameters from the topic
+    - data frequency - 5sec
+    - average sensor readings 
 
     - test that listening for a profile does not block other actions in the loop
 
-
-
-    - data frequency - 5sec

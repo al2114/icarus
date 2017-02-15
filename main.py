@@ -9,7 +9,8 @@ from umqtt.simple import MQTTClient
 # ============================================================== PARAMETERS ============================================================== 
 
 # Network setup data
-MQTT_BROKER = "192.168.0.10"
+#MQTT_BROKER = "192.168.0.10"
+MQTT_BROKER = "172.24.1.145"
 MQTT_NODE = machine.unique_id()
 #MQTT_NODE = "garden"
 
@@ -21,10 +22,11 @@ LED_GREEN = const(13)
 LED_YELLOW = const(14)
 LED_RED = const(0)
 #TEMP_SENSOR_ADDR = 71
+HUMIDIFIER = const(14)
 
 # Frequency parameters
-PUBLISH_FREQUENCY = const(60000)   # in milliseconds
-CONTROL_FREQUENCY = const(30)      # in seconds
+PUBLISH_FREQUENCY = const(5000)   # in milliseconds
+CONTROL_FREQUENCY = const(5)      # in seconds
 LED_FREQ = const(1000)
 
 # Topics
@@ -43,6 +45,9 @@ JSON_ALARM = "alarm"
 TEMP_GAIN = 10
 TEMP_MIN = .0
 TEMP_MAX = 400.
+HUM_GAIN = 10
+HUM_MIN = .0
+HUM_MAX = 400.
 
 
 # ============================================================== SETUP FUNCTIONS ============================================================== 
@@ -122,8 +127,6 @@ def initLED(pin, freq=None):
     return led
 
 # ============================================================== FUNCTIONALITY ============================================================== 
-
-
 
 
 class GardenController():
@@ -211,7 +214,7 @@ class GardenController():
             publishAlarm("Problem with Temperature Sensor")
             raise
 
-    def getHumidty(self):
+    def getHumidity(self):
         try:
             _hum_sensor.measure()
             #hum_sensor.temperature()
@@ -224,7 +227,7 @@ class GardenController():
     def publishStatus(self):
         try:
             temp = self.getTemp()
-            humidity = self.getHumidty()
+            humidity = self.getHumidity()
             timestamp = time.ticks_diff(time.ticks_ms(), start_time)
 
             data = {}
@@ -257,9 +260,26 @@ class GardenController():
 
 
     def controlHumidity(self, hum):
-        error = self._target[JSON_HUM] - self.getHumidty()
-    
+        """
+        Could use proper feedback loop or PID here
+        error = target[JSON_HUM] - getHumidity()
+        hum = error * HUM_GAIN
+        hum = HUM_MAX if hum > HUM_MAX else hum
+        hum = HUM_MIN if hum < HUM_MIN else hum
+        """
+        target_max = target[JSON_HUM]+3
+        target_min = target[JSON_HUM]-3
 
+        isHumidifier = False
+
+        if (self.getHumidity() < target_min) and  (not isHumidifier):
+            isHumidifier =  not isHumidifier
+            humdifier() #dummy humidifier on/off
+        elif (self.getHumidity() >= target_max) and isHumidifier:
+            isHumidifier = not isHumidifier
+            humdifier()
+
+    
     def processParams(self, topic, msg):
         #if topic == PARAMS_TOPIC:
         self._target = msg
@@ -301,6 +321,11 @@ def main():
 
         # Allow for other actions to use the CPU and for some changes to take place
         time.sleep(CONTROL_FREQUENCY)
+
+        # Average readings and publish status
+        temp = getTemp()
+        hum = getHumidity()
+        publishStatus()
 
 
     # Disconnect from server
