@@ -40,9 +40,10 @@ JSON_PLANT = "plant"
 JSON_ALARM = "alarm"
 
 # Controller parameters
-TEMP_GAIN = const(10)
-TEMP_MIN = const(.0)
-TEMP_MAX = const(400.)
+TEMP_GAIN = 10
+TEMP_MIN = .0
+TEMP_MAX = 400.
+
 
 # ============================================================== SETUP FUNCTIONS ============================================================== 
 def networkSetup(network_id=None, network_password=None):
@@ -116,173 +117,185 @@ def initLED(pin, freq=None):
     Initialize a LED
     """
     freq = LED_FREQ if freq is None else freq
-    led = machine.PWM(machine.Pin(0))
+    led = machine.PWM(machine.Pin(pin))
     led.freq(freq)
     return led
 
 # ============================================================== FUNCTIONALITY ============================================================== 
 
-def init():
-    """
-    Initialize all interfaces
-    """
-
-    #Init i2c and get sensor address
-    i2c = initI2C()
-    print("I2C initiliazed")
-
-    # Init Temperature sensor
-    temp_sensor = i2c.scan()[0]
-    print("Temp sensor initiliazed")
-
-    # Init humidity sensor
-    hum_sensor = initHumidity()
-    print("Humidity sensor initialized")
-
-    # Init LEDs
-    green = initLED(LED_GREEN)
-    yellow = initLED(LED_YELLOW)
-    red = initLED(LED_RED)
-    print("LEDs initialized")
-
-    #Setup network
-    networkSetup("John's iPhone", "icrsislife2k16")
-    networkSetup()
-    print("Connected to network")
-
-    # Initialize MQTT client
-    mqtt_client = connectMQTT() 
-    print("Client initialized")
-
-    # Initialize static variables
-    temp_range = TEMP_MAX - TEMP_MIN
-    controlTemp.green_min = TEMP_MIN
-    controlTemp.green_max = temp_range/3.
-    controlTemp.yellow_min = controlTemp.green_min
-    controlTemp.yellow_max = 2*controlTemp.yellow_min
-    controlTemp.red_min = 2*controlTemp.yellow_max
-    controlTemp.red_max = TEMP_MAX
-
-def bytes2temp(byte_list):
-    """
-    Convert a raw temperature sensor reading to a value 
-    """
-    if byte_list[1] & 1:
-        print("Invalid reading from Temperature sensor")
-        raise OSError
-    return (((byte_list[0]<<8)+byte_list[1])>>2)/32.0
 
 
-def getTemp():
-    try:
-        temp_raw = i2c.readfrom_mem(temp_sensor,3,2)
-        temp = bytes2temp(temp_raw)
-        return temp
-    except OSError:
-        publishAlarm("Problem with Temperature Sensor")
-        raise
 
-def getHumidty():
-    try:
-        hum_sensor.measure()
-        #hum_sensor.temperature()
-        return hum_sensor.humidity()
-    except OSError:
-        publishAlarm("Problem with Humidity Sensor")
-        raise
+class GardenController():
 
-def publishStatus():
-    try:
-        temp = getTemp()
-        humidity = getHumidty()
-        timestamp = time.ticks_diff(time.ticks_ms(), start_time)
+    def __init__(self):
+        # Public variables
+        mqtt_client = None      # mqtt client object
 
+        # Private variables
+        _i2c = None              # i2c interface
+        _hum_sensor = None       # humidity sensor object
+        _temp_sensor = None      # temperature sensor object
+
+        _green = None            # green LED
+        _yellow = None           # yellow LED
+        _red = None              # red LED
+
+        _target = {}           # target parameters
+
+
+    def setup(self):
+        """
+        Initialize all interfaces
+        """
+
+        #Init i2c and get sensor address
+        self._i2c = initI2C()
+        print("I2C initiliazed")
+
+        # Init Temperature sensor
+        self._temp_sensor = self._i2c.scan()[0]
+        print("Temp sensor initiliazed")
+
+        # Init humidity sensor
+        self._hum_sensor = initHumidity()
+        print("Humidity sensor initialized")
+
+        # Init LEDs
+        self._green = initLED(LED_GREEN)
+        self._yellow = initLED(LED_YELLOW)
+        self._red = initLED(LED_RED)
+        print("LEDs initialized")
+
+        #Setup network
+        networkSetup("John's iPhone", "icrsislife2k16")
+        #networkSetup()
+        print("Connected to network")
+
+        # Initialize MQTT client
+        self.mqtt_client = connectMQTT() 
+        print("Client initialized")
+
+        # Initialize static variables
+        temp_range = TEMP_MAX - TEMP_MIN
+        self._green_min = TEMP_MIN
+        self._green_max = temp_range/3.
+        self._yellow_min = self._green_min
+        self._yellow_max = 2 * self._yellow_min
+        self._red_min = 2 * self._yellow_max
+        self._red_max = TEMP_MAX
+
+
+    def publishAlarm(self, alarm_msg):
         data = {}
-        data[JSON_TIME] = timestamp/1000.
-        data[JSON_HUM] = hum
-        data[JSON_TEMP] = temp
-        data[JSON_PLANT] = target[JSON_PLANT]
-
-        mqtt_client.publish(STATUS_TOPIC, bytes(data,'utf-8'))
-    except OSError:
-        pass
+        data[JSON_ALARM] = alarm_msg
+        mqtt_client.publish(ALARM_TOPIC, bytes(data,'utf-8'))
 
 
-def publishAlarm(alarm_msg):
-    data = {}
-    data[JSON_ALARM] = alarm_msg
-    mqtt_client.publish(ALARM_TOPIC, bytes(data,'utf-8'))
+    def _bytes2temp(self, byte_list):
+        """
+        Convert a raw temperature sensor reading to a value 
+        """
+        if byte_list[1] & 1:
+            print("Invalid reading from Temperature sensor")
+            raise OSError
+        return (((byte_list[0]<<8)+byte_list[1])>>2)/32.0
 
 
-def controlTemp():
-    def setLED(temp, LED, min_out, max_out):
+    def getTemp(self):
+        try:
+            temp_raw = self._i2c.readfrom_mem(temp_sensor,3,2)
+            temp = self._bytes2temp(temp_raw)
+            return temp
+        except OSError:
+            publishAlarm("Problem with Temperature Sensor")
+            raise
+
+    def getHumidty(self):
+        try:
+            _hum_sensor.measure()
+            #hum_sensor.temperature()
+            return _hum_sensor.humidity()
+        except OSError:
+            publishAlarm("Problem with Humidity Sensor")
+            raise
+
+
+    def publishStatus(self):
+        try:
+            temp = self.getTemp()
+            humidity = self.getHumidty()
+            timestamp = time.ticks_diff(time.ticks_ms(), start_time)
+
+            data = {}
+            data[JSON_TIME] = timestamp/1000.
+            data[JSON_HUM] = hum
+            data[JSON_TEMP] = temp
+            data[JSON_PLANT] = target[JSON_PLANT]
+
+            self.mqtt_client.publish(STATUS_TOPIC, bytes(data,'utf-8'))
+        except OSError:
+            pass
+
+
+    def _setLED(self, temp, LED, min_out, max_out):
         if temp < max_out and temp >= min_out:
             LED.duty(int(temp/TEMP_MAX*LED_FREQ))
         else:
             LED.duty(0)
 
-    error = target[JSON_TEMP] - getTemp()
-    temp = error * TEMP_GAIN
-    temp = TEMP_MAX if temp > TEMP_MAX else temp
-    temp = TEMP_MIN if temp < TEMP_MAX else temp
 
-    setLED(temp, green, controlTemp.green_min, controlTemp.green_max)
-    setLED(temp, yellow, controlTemp.yellow_min, controlTemp.yellow_max)
-    setLED(temp, red, controlTemp.red_min, controlTemp.red_max)
+    def controlTemp(self):
+        error = target[JSON_TEMP] - self.getTemp()
+        temp = error * TEMP_GAIN
+        temp = TEMP_MAX if temp > TEMP_MAX else temp
+        temp = TEMP_MIN if temp < TEMP_MAX else temp
+
+        self._setLED(temp, self._green, self._green_min, self._green_max)
+        self._setLED(temp, self._yellow, self._yellow_min, self._yellow_max)
+        self._setLED(temp, self._red, self._red_min, self._red_max)
 
 
-def controlHumidity(hum):
-    error = target[JSON_HUM] - getHumidty()
+    def controlHumidity(self, hum):
+        error = self._target[JSON_HUM] - self.getHumidty()
     
 
-def processParams(topic, msg):
-    #if topic == PARAMS_TOPIC:
-    target = msg
-    target[JSON_TEMP] = float(target[JSON_TEMP])
-    target[JSON_HUM] = float(target[JSON_HUM])
+    def processParams(self, topic, msg):
+        #if topic == PARAMS_TOPIC:
+        self._target = msg
+        self._target[JSON_TEMP] = float(self._target[JSON_TEMP])
+        self._target[JSON_HUM] = float(self._target[JSON_HUM])
 
 
 def main():
-    # Initialize global vars for interfaces
-    global i2c              # i2c interface
-    global mqtt_client      # mqtt client object
-    global hum_sensor       # humidity sensor object
-    global temp_sensor      # temperature sensor object
+    garden = GardenController()
 
-    global green            # green LED
-    global yellow           # yellow LED
-    global red              # red LED
+    # Initialize 
+    garden.setup()
 
-    global start_time
-    global target           # target parameters
-
-    # initialize interfaces
-    init()
-
-    target = {}
 
     # Initialize a timer which publishes data to MQTT server
     publish_timer = machine.Timer(-1)
-    publish_timer.init(period=PUBLISH_FREQUENCY, mode=machine.Timer.PERIODIC, callback=lambda: publishStatus())
+    publish_timer.init(period=PUBLISH_FREQUENCY, mode=machine.Timer.PERIODIC, callback=lambda: garden.publishStatus())
 
     # Subscribe to topic to listen for new instructions
-    mqtt_client.set_callback()
-    mqtt_client.subscribe(PARAMS_TOPIC)
+    garden.mqtt_client.set_callback()
+    garden.mqtt_client.subscribe(PARAMS_TOPIC)
 
     # Monitor performance
     while True:
         # Check for new profile
-        mqtt_client.check_msg()
+        garden.mqtt_client.check_msg()
 
         # Perform temperature control        
         try:
-            controlTemp()
+            garden.controlTemp()
         except OSError:
             pass
 
         # Perform humidity control        
         try:
-            controlHumidity()
+            garden.controlHumidity()
         except OSError:
             pass
 
@@ -291,7 +304,7 @@ def main():
 
 
     # Disconnect from server
-    mqtt_client.disconnect()
+    garden.mqtt_client.disconnect()
 
 if(__name__ == "__main__"):
     main()
