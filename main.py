@@ -3,6 +3,8 @@ import time
 import socket
 import network
 import dht
+import ujson
+import array
 
 from umqtt.simple import MQTTClient
 
@@ -10,7 +12,7 @@ from umqtt.simple import MQTTClient
 
 # Network setup data
 #MQTT_BROKER = "192.168.0.10"
-MQTT_BROKER = "172.24.1.145"
+MQTT_BROKER = "172.24.1.145"        # Andrew's broker
 MQTT_NODE = machine.unique_id()
 #MQTT_NODE = "garden"
 
@@ -70,7 +72,7 @@ def networkSetup(network_id=None, network_password=None):
     ap_if = network.WLAN(network.AP_IF)
     ap_if.active(False)
 
-    print(sta_if.active())
+    #print(sta_if.active())
 
     if sta_if.isconnected():
         print("Already connected to " + sta_if.ifconfig()[0])
@@ -113,8 +115,8 @@ def initHumidity(pin_num=None):
     Initialize Humidity sensor interface
     """
     pin_num = HUMIDITY_PIN if pin_num is None else pin_num 
-    d = dht.DHT22(machine.Pin(HUMIDITY_PIN))
-    time.sleep(1)
+    d = dht.DHT22(machine.Pin(pin_num))
+    time.sleep(2)
     return d
 
 def initLED(pin, freq=None):
@@ -133,20 +135,24 @@ class GardenController():
 
     def __init__(self):
         # Public variables
-        mqtt_client = None      # mqtt client object
+        self.mqtt_client = None      # mqtt client object
+        self.params_init = False
 
         # Private variables
-        _i2c = None              # i2c interface
-        _hum_sensor = None       # humidity sensor object
-        _temp_sensor = None      # temperature sensor object
+        self._i2c = None              # i2c interface
+        self._hum_sensor = None       # humidity sensor object
+        self._temp_sensor = None      # temperature sensor object
 
-        _green = None            # green LED
-        _yellow = None           # yellow LED
-        _red = None              # red LED
+        self._green = None            # green LED
+        self._yellow = None           # yellow LED
+        self._red = None              # red LED
 
-        _humidifier = None        # humidifier
+        self._humidifier = None        # humidifier
 
-        _target = {}           # target parameters
+        self._target = dict()          # target parameters
+
+        #self.humidity_data = array.array("f") 
+        #self.temp_data = array.array("f") 
 
 
     def setup(self):
@@ -198,7 +204,7 @@ class GardenController():
     def publishAlarm(self, alarm_msg):
         data = {}
         data[JSON_ALARM] = alarm_msg
-        self.mqtt_client.publish(ALARM_TOPIC, bytes(data,'utf-8'))
+        self.mqtt_client.publish(ALARM_TOPIC, bytes(ujson.dumps(data),'utf-8'))
 
 
     def _bytes2temp(self, byte_list):
@@ -210,39 +216,64 @@ class GardenController():
             raise OSError
         return (((byte_list[0]<<8)+byte_list[1])>>2)/32.0
 
+    def _resetTemp():
+        self.temp_data = []
+
+    def _resetHum():
+        self.humidity_data = []
 
     def getTemp(self):
+        return sum(self.temp_data)/len(self.temp_data)
+
+    def measureTemp(self):
         try:
             temp_raw = self._i2c.readfrom_mem(self._temp_sensor,3,2)
             temp = self._bytes2temp(temp_raw)
-            return temp
+            self.temp_data.append(temp)
+            return
         except OSError:
+            print("Problem with Temperature Sensor")
             self.publishAlarm("Problem with Temperature Sensor")
             raise
 
     def getHumidity(self):
-        try:
-            self._hum_sensor.measure()
-            #hum_sensor.temperature()
-            return self._hum_sensor.humidity()
-        except OSError:
-            self.publishAlarm("Problem with Humidity Sensor")
-            raise
+        return sum(self.humidity_data)/len(self.humidity_data)
+
+    def measureHumidity(self):
+        tries = 0
+        while(True):
+            try:
+                self._hum_sensor.measure()
+                #hum_sensor.temperature()
+                hum = self._hum_sensor.humidity()
+                self.humidity_data.append(hum)
+                return
+            except OSError:
+                tries +=1
+                if (tries >= 3):
+                    print("Problem with Humidity Sensor")
+                    self.publishAlarm("Problem with Humidity Sensor")
+                    raise
 
 
     def publishStatus(self):
         try:
             temp = self.getTemp()
-            humidity = self.getHumidity()
-            timestamp = time.ticks_diff(time.ticks_ms(), start_time)
+            hum = self.getHumidity()
+            #timestamp = time.ticks_diff(time.ticks_ms(), start_time)
 
             data = {}
-            data[JSON_TIME] = timestamp/1000.
+            #data[JSON_TIME] = timestamp/1000.
             data[JSON_HUM] = hum
             data[JSON_TEMP] = temp
-            data[JSON_PLANT] = target[JSON_PLANT]
+            data[JSON_PLANT] = self._target[JSON_PLANT]
 
-            self.mqtt_client.publish(STATUS_TOPIC, bytes(data,'utf-8'))
+            print("publishStatus - publishing")
+            self.mqtt_client.publish(STATUS_TOPIC, bytes(ujson.dumps(data),'utf-8'))
+
+            self._resetHum()
+            self._resetTemp()
+
         except OSError:
             pass
 
@@ -255,12 +286,12 @@ class GardenController():
 
     def _toggleHum(self):
         self._humidifier.low()
-        sleep(0.5)
+        time.sleep(0.5)
         self._humidifier.high()       
 
 
     def controlTemp(self):
-        error = target[JSON_TEMP] - self.getTemp()
+        error = self._target[JSON_TEMP] - self.getTemp()
         temp = error * TEMP_GAIN
         temp = TEMP_MAX if temp > TEMP_MAX else temp
         temp = TEMP_MIN if temp < TEMP_MAX else temp
@@ -270,16 +301,12 @@ class GardenController():
         self._setLED(temp, self._red, self._red_min, self._red_max)
 
 
-    def controlHumidity(self, hum):
+    def controlHumidity(self):
         """
-        Could use proper feedback loop or PID here
-        error = target[JSON_HUM] - getHumidity()
-        hum = error * HUM_GAIN
-        hum = HUM_MAX if hum > HUM_MAX else hum
-        hum = HUM_MIN if hum < HUM_MIN else hum
+        Control Humidity levels
         """
-        target_max = target[JSON_HUM]+3
-        target_min = target[JSON_HUM]-3
+        target_max = self._target[JSON_HUM]+3
+        target_min = self._target[JSON_HUM]-3
 
         isHumidifier = False
 
@@ -292,8 +319,10 @@ class GardenController():
 
     
     def processParams(self, topic, msg):
+        self.params_init = True
         #if topic == PARAMS_TOPIC:
-        self._target = msg
+        data = ujson.loads(msg)
+        self._target = data
         self._target[JSON_TEMP] = float(self._target[JSON_TEMP])
         self._target[JSON_HUM] = float(self._target[JSON_HUM])
 
@@ -301,20 +330,30 @@ class GardenController():
         print('Starting Test')
 
         print('Testing Sensors')
-        print('Test1: Temp = %f', self.getTemp())
-        print('Test2: Humidity = %f', self.getHumidity())
+        try:
+            print('Test1: Temp = %f', self.getTemp())
+        except OSError:
+            print("Testing  - problem with temperature sensor")
+
+        try:
+            print('Test2: Humidity = %f', self.getHumidity())
+        except OSError:
+            print("Testing  - problem with humidity sensor")
 
         print('Testing Peripherals')
-        print('Test4: LEDs - Please check manually')
-        self._red.high()
-        sleep(1)
-        self._green.high()
-        sleep(1)
-        self._yellow.high()
-        sleep(1)
-        print('Test5: Humidifier - Please check manually')
+        print('Test4: LEDs - Watch out')
+        self._red.duty(900)
+        time.sleep(1)
+        self._red.duty(0)
+        self._green.duty(900)
+        time.sleep(1)
+        self._green.duty(0)
+        self._yellow.duty(900)
+        time.sleep(1)
+        self._yellow.duty(0)
+        print('Test5: Humidifier - Watch out')
         self._toggleHum()
-        sleep(5)
+        time.sleep(5)
         self._toggleHum()
 
         print('All hardware tests complete!')
@@ -329,16 +368,21 @@ def main():
     # Initialize 
     garden.setup()
 
-
     # Initialize a timer which publishes data to MQTT server
     publish_timer = machine.Timer(-1)
     publish_timer.init(period=PUBLISH_FREQUENCY, mode=machine.Timer.PERIODIC, callback=lambda: garden.publishStatus())
 
     # Subscribe to topic to listen for new instructions
+    print("Setting callback")
     garden.mqtt_client.set_callback(garden.processParams)
     garden.mqtt_client.subscribe(PARAMS_TOPIC)
 
-    garden.test()
+    # Request parameters at init
+    garden.publishAlarm("request")
+    while not garden.params_init:
+        garden.mqtt_client.wait_msg()
+
+    #garden.test()
 
     # Monitor performance
     while True:
@@ -361,13 +405,12 @@ def main():
         time.sleep(CONTROL_FREQUENCY)
 
         # Average readings and publish status
-        temp = garden.getTemp()
-        hum = garden.getHumidity()
-        garden.publishStatus()
-
+        garden.measureTemp()
+        garden.measureHumidity()
 
     # Disconnect from server
     garden.mqtt_client.disconnect()
 
 if(__name__ == "__main__"):
+
     main()
