@@ -9,7 +9,8 @@ from umqtt.simple import MQTTClient
 # ============================================================== PARAMETERS ============================================================== 
 
 # Network setup data
-MQTT_BROKER = "192.168.0.10"
+#MQTT_BROKER = "192.168.0.10"
+MQTT_BROKER = "172.24.1.145"
 MQTT_NODE = machine.unique_id()
 #MQTT_NODE = "garden"
 
@@ -21,10 +22,11 @@ LED_GREEN = const(13)
 LED_YELLOW = const(14)
 LED_RED = const(0)
 #TEMP_SENSOR_ADDR = 71
+HUMIDIFIER = const(14)
 
 # Frequency parameters
-PUBLISH_FREQUENCY = const(60000)   # in milliseconds
-CONTROL_FREQUENCY = const(30)      # in seconds
+PUBLISH_FREQUENCY = const(5000)   # in milliseconds
+CONTROL_FREQUENCY = const(5)      # in seconds
 LED_FREQ = const(1000)
 
 # Topics
@@ -43,6 +45,9 @@ JSON_ALARM = "alarm"
 TEMP_GAIN = const(10)
 TEMP_MIN = const(.0)
 TEMP_MAX = const(400.)
+HUM_GAIN = const(10)
+HUM_MIN = const(.0)
+HUM_MAX = const(400.)
 
 # ============================================================== SETUP FUNCTIONS ============================================================== 
 def networkSetup(network_id=None, network_password=None):
@@ -116,7 +121,7 @@ def initLED(pin, freq=None):
     Initialize a LED
     """
     freq = LED_FREQ if freq is None else freq
-    led = machine.PWM(machine.Pin(0))
+    led = machine.PWM(machine.Pin(pin))
     led.freq(freq)
     return led
 
@@ -147,7 +152,7 @@ def init():
 
     #Setup network
     networkSetup("John's iPhone", "icrsislife2k16")
-    networkSetup()
+    #networkSetup()
     print("Connected to network")
 
     # Initialize MQTT client
@@ -182,7 +187,7 @@ def getTemp():
         publishAlarm("Problem with Temperature Sensor")
         raise
 
-def getHumidty():
+def getHumidity():
     try:
         hum_sensor.measure()
         #hum_sensor.temperature()
@@ -232,8 +237,25 @@ def controlTemp():
 
 
 def controlHumidity(hum):
-    error = target[JSON_HUM] - getHumidty()
-    
+    '''
+    # Could use proper feedback loop or PID here
+    error = target[JSON_HUM] - getHumidity()
+    hum = error * HUM_GAIN
+    hum = HUM_MAX if hum > HUM_MAX else hum
+    hum = HUM_MIN if hum < HUM_MIN else hum
+    '''
+    target_max = target[JSON_HUM]+3
+    target_min = target[JSON_HUM]-3
+
+    isHumidifier = False
+
+    if getHumidity() < target_min && !isHumidifier:
+        isHumidifier = !isHumidifier
+        humdifier() #dummy humidifier on/off
+    elif getHumidity() >= target_max && isHumidifier:
+        isHumidifier = !isHumidifier
+        humdifier()
+  
 
 def processParams(topic, msg):
     #if topic == PARAMS_TOPIC:
@@ -288,6 +310,11 @@ def main():
 
         # Allow for other actions to use the CPU and for some changes to take place
         time.sleep(CONTROL_FREQUENCY)
+
+        # Average readings and publish status
+        temp = getTemp()
+        hum = getHumidity()
+        publishStatus()
 
 
     # Disconnect from server
