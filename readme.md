@@ -10,16 +10,23 @@ embedded to server - topic `esys/icarus/status`
 }
 ```
 
-
 server to embedded - topic `esys/icarus/params`
 ```
 {
     time: "str"
     temp: float
     hum: float
-    plant: "s"
+    plant: "str"
 }
 ```
+
+topic 'esys/icarus/power'
+```
+{
+    power: "str"
+}
+```
+
 Note: sensor should get start time when it initializes and track its own time
 
 embedded to server alarm - topic `esys/icarus/alarm`
