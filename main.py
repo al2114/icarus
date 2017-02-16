@@ -12,7 +12,9 @@ from umqtt.simple import MQTTClient
 
 # Network setup data
 #MQTT_BROKER = "192.168.0.10"
-MQTT_BROKER = "172.24.1.145"        # Andrew's broker
+#MQTT_BROKER = "172.24.1.145"        # Andrew's broker
+#MQTT_BROKER = "169.254.219.181"        # Andrew's iphone
+MQTT_BROKER = "192.168.43.93"        # Ben's phone
 MQTT_NODE = machine.unique_id()
 #MQTT_NODE = "garden"
 
@@ -28,7 +30,8 @@ HUMIDIFIER = const(14)
 
 # Frequency parameters
 PUBLISH_FREQUENCY = const(5000)   # in milliseconds
-CONTROL_FREQUENCY = const(5)      # in seconds
+#CONTROL_FREQUENCY = const(5)      # in seconds
+CONTROL_FREQUENCY = const(1)      # in seconds
 LED_FREQ = const(1000)
 
 # Topics
@@ -44,12 +47,13 @@ JSON_PLANT = "plant"
 JSON_ALARM = "alarm"
 
 # Controller parameters
-TEMP_GAIN = 10
+TEMP_GAIN = 50
 TEMP_MIN = .0
 TEMP_MAX = 400.
-HUM_GAIN = 10
-HUM_MIN = .0
-HUM_MAX = 400.
+ALLOWED_ERROR = const(3)
+#HUM_GAIN = 10
+#HUM_MIN = .0
+#HUM_MAX = 400.
 
 
 # ============================================================== SETUP FUNCTIONS ============================================================== 
@@ -135,6 +139,8 @@ class GardenController():
         self.mqtt_client = None      # mqtt client object
         self.params_init = False
 
+        self._hum_on = False
+
         # Private variables
         self._i2c = None              # i2c interface
         self._hum_sensor = None       # humidity sensor object
@@ -150,6 +156,7 @@ class GardenController():
 
         self.hum_data = array.array("f") 
         self.temp_data = array.array("f") 
+
 
     def setup(self):
         """
@@ -169,9 +176,10 @@ class GardenController():
         print("Humidity sensor initialized")
 
         # Init LEDs
-        self._green = initLED(LED_GREEN)
-        self._yellow = initLED(LED_YELLOW)
+        #self._green = initLED(LED_GREEN)
+        #self._yellow = initLED(LED_YELLOW)
         self._red = initLED(LED_RED)
+        self._red_on = False
         print("LEDs initialized")
 
         # Init Humidifier
@@ -179,7 +187,9 @@ class GardenController():
         print("Humidifier initialized")
 
         #Setup network
-        networkSetup("John's iPhone", "icrsislife2k16")
+        #networkSetup("John's iPhone", "icrsislife2k16")
+        #networkSetup("Andrew's iPhone", "aaaaaaaa")
+        networkSetup("MB", "icarus2011")
         #networkSetup()
         print("Connected to network")
 
@@ -188,6 +198,7 @@ class GardenController():
         print("Client initialized")
 
         # Initialize static variables
+        """
         temp_range = TEMP_MAX - TEMP_MIN
         self._green_min = TEMP_MIN
         self._green_max = temp_range/3.
@@ -195,6 +206,7 @@ class GardenController():
         self._yellow_max = 2 * self._yellow_min
         self._red_min = 2 * self._yellow_max
         self._red_max = TEMP_MAX
+        """
 
         self.measureTemp()
         self.measureHumidity()
@@ -292,32 +304,42 @@ class GardenController():
         time.sleep(0.5)
         self._humidifier.high()       
 
+        self._hum_on = not self._hum_on
 
     def controlTemp(self):
-        error = self._target[JSON_TEMP] - self.getTemp()
-        temp = error * TEMP_GAIN
-        temp = TEMP_MAX if temp > TEMP_MAX else temp
-        temp = TEMP_MIN if temp < TEMP_MAX else temp
+        #target_max = self._target[JSON_TEMP] + ALLOWED_ERROR
+        target_min = self._target[JSON_TEMP] - ALLOWED_ERROR
+        temp = self.getTemp()
+        error = self._target[JSON_TEMP] - temp
+        val = TEMP_GAIN * error
 
-        self._setLED(temp, self._green, self._green_min, self._green_max)
-        self._setLED(temp, self._yellow, self._yellow_min, self._yellow_max)
-        self._setLED(temp, self._red, self._red_min, self._red_max)
+        print("Temp value: %f", temp)
+        print("Temp min: %f", target_min)
+        print("Temp error: %f", error)
+        print("Temp setting: %f", val)
+
+        if temp < target_min:
+            self._red.duty(int(val))
+        else:
+            self._red.duty(0)
 
 
     def controlHumidity(self):
         """
         Control Humidity levels
         """
-        target_max = self._target[JSON_HUM]+3
-        target_min = self._target[JSON_HUM]-3
+        target_max = self._target[JSON_HUM] + ALLOWED_ERROR
+        target_min = self._target[JSON_HUM] - ALLOWED_ERROR
+        hum = self.getHumidity()
+        
+        print("Humidity on: %r", self._hum_on)
+        print("Humidity value: %f", hum)
+        print("Humidity min: %f", target_min)
+        print("Humidity max: %f", target_max)
 
-        isHumidifier = False
-
-        if (self.getHumidity() < target_min) and  (not isHumidifier):
-            isHumidifier =  not isHumidifier
-            self._toggleHum() #dummy humidifier on/off
-        elif (self.getHumidity() >= target_max) and isHumidifier:
-            isHumidifier = not isHumidifier
+        if (hum < target_min) and  (not self._hum_on):
+            self._toggleHum()
+        elif (hum >= target_max) and self._hum_on:
             self._toggleHum()
 
     
@@ -335,8 +357,8 @@ def main():
     garden.setup()
 
     # Initialize a timer which publishes data to MQTT server
-    publish_timer = machine.Timer(-1)
-    #publish_timer.init(period=PUBLISH_FREQUENCY, mode=machine.Timer.PERIODIC, callback=garden.publishStatus)
+    pub_timer = machine.Timer(-1)
+    pub_timer.init(period=PUBLISH_FREQUENCY, mode=machine.Timer.PERIODIC, callback= lambda _ : garden.publishStatus())
 
     # Subscribe to topic to listen for new instructions
     print("Setting callback")
@@ -372,7 +394,7 @@ def main():
 
         # Allow for other actions to use the CPU and for some changes to take place
         time.sleep(CONTROL_FREQUENCY)
-        garden.publishStatus()
+        #garden.publishStatus()
         # Average readings and publish status
         garden.measureTemp()
         garden.measureHumidity()

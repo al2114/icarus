@@ -37,3 +37,6 @@ DEMO TO DO:
 
     - test that listening for a profile does not block other actions in the loop
 
+
+    - test humidity control loop - must demo
+    - test temp control loop - must demo them
