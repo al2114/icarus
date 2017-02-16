@@ -1,0 +1,74 @@
+<html>
+<head>
+  <title>ICARUS Plantarium Nova | Control Panel</title>
+  <script src="scripts/jquery/jquery.3.1.1.min.js"></script>
+  <script src="scripts/d3/d3.v3.min.js"></script>
+
+  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/chart.css">
+  <link rel="stylesheet" href="style/font-awesome-4.7.0/css/font-awesome.min.css">
+
+
+  <script src="scripts/get_info.js"></script>
+  <script src="scripts/add_profile.js"></script>
+
+  <script src="scripts/chart.js"></script>
+
+
+</head>
+<body>
+
+ <div id="hide_scroll">
+    <div id="profile_wrapper">
+      <div id="prof_wrapper">
+      </div>
+
+      <div class="prof add">
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="main_wrapper">
+    <header>
+      <div class="logo">
+        <div class="brand">
+          ICARUS Plantarium Nova
+        </div>
+        <div class="cp">
+          Control Panel
+        </div>
+      </div>
+      
+      <div id="switch">
+        <span id="switch-inner"></span>
+      </div>
+    </header>
+
+    <div id="stat_wrapper">
+      <div id="chart"></div>
+      <div id="chart2"></div>
+
+      <ul class="levels">
+        <li class="temp">
+          <i class="fa fa-thermometer-three-quarters"></i>
+          <span><text id="t_value">0.0</text>&degC</span>
+        </li>
+        <li class="humid">
+          <i class="fa fa-tint" aria-hidden="true"></i>
+          <span><text id="h_value">0</text>%</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+ 
+
+
+</body>
+<script src="scripts/switch.js"></script>
+<script src="scripts/update_profile.js"></script>
+<script src="scripts/add_profile.js"></script>
+
+</html>
