@@ -1,0 +1,42 @@
+ 
+- Internet connection
+    - Connect to internet - MQTT - DONE
+    - find out how to send data to website - DONE
+    - send JSON (humidity, temperature, time sent to the website ) - DONE
+
+    - listen to JSON for new profile
+
+
+ - Website
+    - Bootstrap + template
+    - graph with statistics - updated every minute + exact values for current temp and humidity 
+    - status - ON or OFF
+    - plant profile
+    - accept JSON 
+    - send JSON for profile
+
+
+
+Questions:
+    - how often should we send data
+    - what type of history do we store on the device - this should be determined by the types of failure we want to report
+    - should we have
+
+
+
+FINAL SUBMISSION:
+    - both syncronize time
+
+
+DEMO TO DO:
+    - test all functionality operation
+    - set humidity parameters
+    - make sure to get parameters from the topic
+    - data frequency - 5sec
+    - average sensor readings 
+
+    - test that listening for a profile does not block other actions in the loop
+
+
+    - test humidity control loop - must demo
+    - test temp control loop - must demo them
