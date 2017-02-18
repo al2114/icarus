@@ -12,9 +12,9 @@ from umqtt.simple import MQTTClient
 
 # Network setup data
 #MQTT_BROKER = "192.168.0.10"
-#MQTT_BROKER = "172.24.1.145"        # Andrew's broker
+MQTT_BROKER = "172.24.1.145"        # Andrew's broker
 #MQTT_BROKER = "169.254.219.181"        # Andrew's iphone
-MQTT_BROKER = "192.168.43.93"        # Ben's phone
+#MQTT_BROKER = "192.168.43.93"        # Ben's phone
 MQTT_NODE = machine.unique_id()
 #MQTT_NODE = "garden"
 
@@ -187,9 +187,9 @@ class GardenController():
         print("Humidifier initialized")
 
         #Setup network
-        #networkSetup("John's iPhone", "icrsislife2k16")
+        networkSetup("John's iPhone", "icrsislife2k16")
         #networkSetup("Andrew's iPhone", "aaaaaaaa")
-        networkSetup("MB", "icarus2011")
+        #networkSetup("MB", "icarus2011")
         #networkSetup()
         print("Connected to network")
 
