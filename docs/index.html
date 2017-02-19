@@ -51,13 +51,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="#about">About</a>
+                        <a href="#about1">About</a>
                     </li>
                     <li>
                         <a href="https://al2114.github.io/icarus/cp">Control Panel</a>
                     </li>
                     <li>
-                        <a href="#contact">Contact</a>
+                        <a href="mailto:benjamin.withers14@ic.ac.uk,andrew.li14@ic.ac.uk,nikolay.nikolov14@ic.ac.uk">Contact</a>
                     </li>
                 </ul>
             </div>
@@ -208,15 +208,15 @@
                         </li>
                         <li class="footer-menu-divider">&sdot;</li>
                         <li>
-                            <a href="#about">About</a>
+                            <a href="#about1">About</a>
                         </li>
                         <li class="footer-menu-divider">&sdot;</li>
                         <li>
-                            <a href="#services">Services</a>
+                            <a href="https://al2114.github.io/icarus/cp">Control Panel</a>
                         </li>
                         <li class="footer-menu-divider">&sdot;</li>
                         <li>
-                            <a href="#contact">Contact</a>
+                            <a href="mailto:benjamin.withers14@ic.ac.uk,andrew.li14@ic.ac.uk,nikolay.nikolov14@ic.ac.uk">Contact</a>
                         </li>
                     </ul>
                     <p class="copyright text-muted small">Copyright &copy; ICARUS 2017. All Rights Reserved</p>
@@ -224,6 +224,51 @@
             </div>
         </div>
     </footer>
+
+    <div id="about1" class="overlay">
+		<div class="popup">
+			<h2>About ICARUS</h2>
+			<a class="close" href="#">&times;</a>
+			<div class="content">
+				<p>Our entire system consists of three components - the embedded system, a webserver, and a webclient.</p>
+				
+				<p>The embedded system runs on an ESP8266 wifi module using micropython. The system connects to a wifi network and MQTT broker defined in the code, and subscribes and publishes to various topics, as defined bellow, to communicate with the webserver.</p>
+				
+				<p>The webserver runs on NodeJS and acts as a handler to interface between the webclient and embedded device. It communicates with the embedded device via MQTT and handles HTTP requests received from the webclient. The responsibilities of the webserver include:</p>
+				
+				<ul>
+				<li>Storing:
+					<ul>
+					<li>Profiles</li>
+					<li>Sensor data</li>
+					<li>Device state</li>
+					</ul>
+				</li>
+				<li>Handling:
+					<ul>
+					<li>From device:
+						<ul>
+						<li>Initialisation request</li>
+						<li>Sensor data</li>
+						</ul>
+					</li>
+					<li>From webclient:
+						<ul>
+						<li>Request for profiles</li>
+						<li>Creating new profiles</li>
+						<li>Turning device on/off</li>
+						<li>Current sensor data</li>
+						<li>Setting profile for the device</li>
+						</ul>
+					</li>
+					</ul>
+				</li>
+				</ul>
+
+				<p>The webclient utilises the d3.js framework and AJAX to request and visualise the sensor data form the webserver in real time. Other services on the webclient include turning the device on/off, requesting the webserver to change the device profile, and create new profiles.</p>
+			</div>
+		</div>
+	</div>
 
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
