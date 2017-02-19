@@ -17,7 +17,7 @@ var curr_data = {
 	
 // Begin MQTT Client to handle device data
 
-var client = mqtt.connect('mqtt://localhost');
+var client = mqtt.connect('mqtt://192.168.0.10');
 
 client.on('connect', function() {
 	console.log("Web client connected!");
