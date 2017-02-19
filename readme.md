@@ -1,10 +1,10 @@
 ## Architecture
 
-Our entire system consists of three components - the embedded system, a webserver, and a webclient.
+Our entire system consists of three components - an embedded system, a webserver, and a webclient.
 
-The embedded system runs on an ESP8266 wifi module using micropython. The system connects to a wifi network and MQTT broker defined in the code, and subscribes and publishes to various topics, as defined bellow, to communicate with the webserver.
+The embedded system runs on an ESP8266 WiFi module using micropython. The system connects to a WiFi network and a MQTT broker defined in the code, and subscribes and publishes to various topics, as defined bellow, to communicate with the webserver.
 
-The webserver runs on NodeJS and acts as a handler to interface between the webclient and embedded device. It communicates with the embedded device via MQTT and handles HTTP requests received from the webclient. The responsibilities of the webserver include:
+The webserver runs on Node.js and acts as a handler to interface between the webclient and embedded device. It communicates with the embedded device via MQTT and handles HTTP requests received from the webclient. The responsibilities of the webserver include:
 
 - Storing:
     - Profiles

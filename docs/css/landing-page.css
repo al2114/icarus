@@ -113,6 +113,13 @@ h6 {
     border-top: 3px solid #e7e7e7;
 }
 
+.section-heading-3-spacer {
+    width: 200px;
+    padding-top: 10px
+    border-top: 3px solid #e7e7e7;
+    margin: auto;
+}
+
 .banner {
     padding: 100px 0;
     color: #f8f8f8;
