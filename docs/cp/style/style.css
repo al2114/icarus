@@ -57,6 +57,7 @@ header {
 	outline:none;
 	border-radius: 13px;
 	color: black;
+	background-color: #888;
 }
 
 #switch:hover {
