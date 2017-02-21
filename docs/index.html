@@ -80,6 +80,9 @@
                         <a href="#abouticarus">About</a>
                     </li>
                     <li>
+                        <a href="#techspecs">Technical</a>
+                    </li>
+                    <li>
                         <a href="https://al2114.github.io/icarus/cp">Control Panel</a>
                     </li>
                     <li>
@@ -337,46 +340,54 @@
 			<a class="close" href="#">&times;</a>
 			<div class="content">
 				<p>ICARUS is a team of 3 talented Electronic and Information Engineering students from Imperial College London. The Plantarium Nova Project was created as a part of our coursework submission for Embedded Systems, a course module in the Electrical and Electronic Engineering Department at Imperial College London. The course is run by Prof E Stott.</p>
-
-				<p>The entire system consists of three components - an embedded system, a webserver, and a webclient.</p>
-				
-				<p>The embedded system runs on a ESP8266 WiFi module using MicroPython. The system connects to a WiFi network and a MQTT broker defined in the code, and subscribes and publishes to various MQTT topics, as defined below, to communicate with the webserver.</p>
-				
-				<p>The webserver runs on Node.js and acts as a handler to interface between the webclient and embedded device. It communicates with the embedded device via MQTT and handles HTTP requests received from the webclient. The responsibilities of the webserver include:</p>
-				
-				<ul>
-				<li>Storing:
-					<ul>
-					<li>Profiles</li>
-					<li>Sensor data</li>
-					<li>Device state</li>
-					</ul>
-				</li>
-				<li>Handling:
-					<ul>
-					<li>From device:
-						<ul>
-						<li>Initialisation request</li>
-						<li>Sensor data</li>
-						</ul>
-					</li>
-					<li>From webclient:
-						<ul>
-						<li>Request for profiles</li>
-						<li>Creating new profiles</li>
-						<li>Turning device on/off</li>
-						<li>Current sensor data</li>
-						<li>Setting profile for the device</li>
-						</ul>
-					</li>
-					</ul>
-				</li>
-				</ul>
-
-				<p>The webclient utilises the d3.js framework and AJAX to request and visualise the sensor data form the webserver in real time. Other services on the webclient include turning the device on/off, requesting the webserver to change the device profile, and create new profiles.</p>
 			</div>
 		</div>
 	</div>
+
+    <div id="techspecs" class="overlay">
+        <div class="popup" style="width: 70vw">
+            <h2>Technical Details</h2>
+            <a class="close" href="#">&times;</a>
+            <div class="content" style="max-height: 70vh; overflow: scroll">
+                <p>The entire system consists of three components - an embedded system, a webserver, and a webclient.</p>
+                
+                <p>The embedded system runs on a ESP8266 WiFi module using MicroPython. The system connects to a WiFi network and a MQTT broker defined in the code, and subscribes and publishes to various MQTT topics, as defined below, to communicate with the webserver.</p>
+                
+                <p>The webserver runs on Node.js and acts as a handler to interface between the webclient and embedded device. It communicates with the embedded device via MQTT and handles HTTP requests received from the webclient. The responsibilities of the webserver include:</p>
+                
+                <ul>
+                <li>Storing:
+                    <ul>
+                    <li>Profiles</li>
+                    <li>Sensor data</li>
+                    <li>Device state</li>
+                    </ul>
+                </li>
+                <li>Handling:
+                    <ul>
+                    <li>From device:
+                        <ul>
+                        <li>Initialisation request</li>
+                        <li>Sensor data</li>
+                        </ul>
+                    </li>
+                    <li>From webclient:
+                        <ul>
+                        <li>Request for profiles</li>
+                        <li>Creating new profiles</li>
+                        <li>Turning device on/off</li>
+                        <li>Current sensor data</li>
+                        <li>Setting profile for the device</li>
+                        </ul>
+                    </li>
+                    </ul>
+                </li>
+                </ul>
+
+                <p>The webclient utilises the d3.js framework and AJAX to request and visualise the sensor data form the webserver in real time. Other services on the webclient include turning the device on/off, requesting the webserver to change the device profile, and create new profiles.</p>
+            </div>
+        </div>
+    </div>
 
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
