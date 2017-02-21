@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>ICARUS Plantarium Nova</title>
+    <link rel="SHORTCUT ICON" href="favicon.ico" />
+	<link rel="icon" href="favicon.ico" type="image/ico" />
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/landing-page.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+	<script>
+		window.onscroll = function(e) {
+		  var toShow =  document.querySelectorAll('.showOnScroll');
+		  for(var i = 0; i < toShow.length; i++) {
+		    if(window.innerHeight - toShow[i].getBoundingClientRect().top - 100 > 0) {
+		      toShow[i].effect("slideFadein",{},500);
+		    } else {
+		      toShow[i].effect("slideFadein",{mode:'remove'},duration);
+		    }
+		  }
+		}
+	</script>
+
+	<style type="text/css">
+
+		.fadeIn{
+			padding-left: 0px;
+		}
+
+		.fadeOut{
+			padding-left: 50px;
+		}
+
+	</style>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>                
+                <a class="navbar-brand topnav" href="#" style="font-size: 1.5em"> <img src="img/logo.png"/> ICARUS Plantarium Nova</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#abouticarus">About</a>
+                    </li>
+                    <li>
+                        <a href="#techspecs">Technical</a>
+                    </li>
+                    <li>
+                        <a href="https://al2114.github.io/icarus/cp">Control Panel</a>
+                    </li>
+                    <li>
+                        <a href="mailto:benjamin.withers14@ic.ac.uk,andrew.li14@ic.ac.uk,nikolay.nikolov14@ic.ac.uk">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+
+    <!-- Header -->
+    <a name="about"></a>
+    <div class="intro-header">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="intro-message">
+                    	<img src="img/logo.svg" style="width:150px">
+                        <h1>Plantarium Nova</h1>
+                        <hr class="intro-divider">
+                        <h3>Indoor Gardening Made Easy</h3>
+                        <h3>by ICARUS</h3>
+                   <!--      <ul class="list-inline intro-social-buttons">
+                            <li>
+                                <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/al2114/icarus" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                            </li>
+                            <li>
+                                <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
+                            </li>
+                        </ul> -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.intro-header -->
+
+    <!--  Video section -->
+    <div class="content-section-b">
+
+        <div class="container">
+
+            <div class="row">
+                <div>
+                    <p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    <!-- Page Content -->
+
+    <div class="content-section-a">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">A Revolution in<br> Indoor Botany</h2>
+                    <p class="lead">Plantarium Nova enables you to grow any plant in a precisely controlled user-settable environment. Control temperature and humiditity to grow your plant perfectly. No more wilting and dying plants!</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive showOnScroll" src="img/enclosure_closed.png" alt="">
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+    <div class="content-section-b">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Cloud-based Real-time<br>Web Control Interface</h2>
+                    <p class="lead">Control your Plantarium Nova, from anywhere in the world! Connect the device to your WiFi network, link it to our intutive web interface, and monitor your plant from another room, at work or on holiday - in real time! You can trust your Plantarium Nova to take take of your plants for you.</p>
+                </div>
+                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+                    <img class="img-responsive" src="img/cpmacimg.png" alt="">
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-b -->
+
+    <div class="content-section-a">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Grow Plants using<br>Custom Profiles</h2>
+                    <p class="lead">Select from a massive library of tested plant profiles and let your Plantarium Nova do the rest! But if you want to have more control, you can easily create custom profiles for not only rare plants, but for other projects too! Upload your profiles to the Cloud and share them with other users! Download recommended and user-submitted profiles to try out for yourself!<a></p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="img/enclosure_open.png" alt="">
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+    <a  name="tools"></a>
+     <div class="content-section-b">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-4 col-sm-4">
+                	<p align="center"><i class="fa fa-cloud-upload fa-5x fa-fx"></i></p>
+                	<p align="center"><hr class="section-heading-3-spacer"></p>
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading" style="text-align: center;">Cloud Service</h2>
+                    <p class="lead">By using the Cloud, the Plantarium Nova is able to communicate with your devices, both mobile and non-mobile. Anything you own with Internet access will be able to monitor and control the Plantarium Nova. Link your device to your account and sign in to view how your plant is doing! Any failures or errors will be sent to your device of choice through the Cloud, meaning that you always have peace of mind.</p>
+                </div>
+                <div class="col-lg-4 col-sm-4">
+                    <p align="center"><i class="fa fa-thermometer-three-quarters fa-5x fa-fx"></i></p>
+                	<p align="center"><hr class="section-heading-3-spacer"></p>
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading" style="text-align: center;">Temperature Control</h2>
+                    <p class="lead">Temperature is a very important factor to plant growth. If it is too high or too low, the plant may die. The Plantarium Nova conatins a TMP007 thermopile temperature sensor and a heater (not yet available) and utilises a control loop to keep the enclosure at the temperature you specify. Operating temperatures range from 5&deg;C to 60&deg;C.</p>
+                </div>
+                <div class="col-lg-4 col-sm-4">
+                    <p align="center"><i class="fa fa-tint fa-5x fa-fx"></i></p>
+                	<p align="center"><hr class="section-heading-3-spacer"></p>
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading" style="text-align: center;">Humiditity Control</h2>
+                    <p class="lead">Some plants require humidity levels higher or lower than that of your home. To enable you to grow exotic plants, the Plantarium Nova contains a AM2302 DHT22 humidity sensor and a humidifier. Refilling the water needed for the humidifier is also simple. Simply refill the water bottle from a tap, screw it back in and it is ready to go again. Operating humidity levels range from 10% to 90%</p>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+    <div class="content-section-a">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Infinite Possibilities<br>with Expandable Accessories</h2>
+                    <p class="lead">With future firmware updates and our modular design, we can add new features and sensors. A light sensor and controller would be the next feature, with the potential for so much more! Soil sensors, automatic watering, you name it! All you have to do is plug in your laptop, update the firmware and plug in your new accessory!<a></p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="img/phones.png" alt="">
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-b -->
+
+	<a  name="services"></a>
+
+    <!-- /.content-section-a -->
+
+
+	<a  name="contact"></a>
+    <div class="banner">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2>Connect to ICARUS:</h2>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="list-inline banner-social-buttons">
+                        <li>
+                            <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/al2114/icarus" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                        </li>
+                        <li>
+                            <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.banner -->
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="list-inline">
+                        <li>
+                            <a href="#">Home</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="#abouticarus">About</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="https://al2114.github.io/icarus/cp">Control Panel</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="mailto:benjamin.withers14@ic.ac.uk,andrew.li14@ic.ac.uk,nikolay.nikolov14@ic.ac.uk">Contact</a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted small">Copyright &copy; ICARUS 2017. All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="abouticarus" class="overlay">
+		<div class="popup">
+			<h2>About ICARUS</h2>
+			<a class="close" href="#">&times;</a>
+			<div class="content">
+				<p>ICARUS is a team of 3 talented Electronic and Information Engineering students from Imperial College London. The Plantarium Nova Project was created as a part of our coursework submission for Embedded Systems, a course module in the Electrical and Electronic Engineering Department at Imperial College London. The course is run by Prof E Stott.</p>
+			</div>
+		</div>
+	</div>
+
+    <div id="techspecs" class="overlay">
+        <div class="popup" style="width: 70vw">
+            <h2>Technical Details</h2>
+            <a class="close" href="#">&times;</a>
+            <div class="content" style="max-height: 70vh; overflow: scroll">
+                <p>The entire system consists of three components - an embedded system, a webserver, and a webclient.</p>
+                
+                <p>The embedded system runs on a ESP8266 WiFi module using MicroPython. The system connects to a WiFi network and a MQTT broker defined in the code, and subscribes and publishes to various MQTT topics, as defined below, to communicate with the webserver.</p>
+                
+                <p>The webserver runs on Node.js and acts as a handler to interface between the webclient and embedded device. It communicates with the embedded device via MQTT and handles HTTP requests received from the webclient. The responsibilities of the webserver include:</p>
+                
+                <ul>
+                <li>Storing:
+                    <ul>
+                    <li>Profiles</li>
+                    <li>Sensor data</li>
+                    <li>Device state</li>
+                    </ul>
+                </li>
+                <li>Handling:
+                    <ul>
+                    <li>From device:
+                        <ul>
+                        <li>Initialisation request</li>
+                        <li>Sensor data</li>
+                        </ul>
+                    </li>
+                    <li>From webclient:
+                        <ul>
+                        <li>Request for profiles</li>
+                        <li>Creating new profiles</li>
+                        <li>Turning device on/off</li>
+                        <li>Current sensor data</li>
+                        <li>Setting profile for the device</li>
+                        </ul>
+                    </li>
+                    </ul>
+                </li>
+                </ul>
+
+                <p>The webclient utilises the d3.js framework and AJAX to request and visualise the sensor data form the webserver in real time. Other services on the webclient include turning the device on/off, requesting the webserver to change the device profile, and create new profiles.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

@@ -11,11 +11,12 @@ from umqtt.simple import MQTTClient
 # ============================================================== PARAMETERS ============================================================== 
 
 # Network setup data
-#MQTT_BROKER = "192.168.0.10"           # original broker
+MQTT_BROKER = "192.168.0.10"           # original broker
 #MQTT_BROKER = "169.254.219.181"
 #MQTT_BROKER = "172.24.1.145"           # Andrew's broker
 #MQTT_BROKER = "169.254.219.181"        # Andrew's iphone
-MQTT_BROKER = "192.168.43.93"           # Ben's phone
+#MQTT_BROKER = "192.168.43.93"          # Ben's phone
+
 MQTT_NODE = machine.unique_id()
 #MQTT_NODE = "garden"
 

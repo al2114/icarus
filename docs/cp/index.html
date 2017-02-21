@@ -1,0 +1,94 @@
+<html>
+<head>
+  <title>ICARUS Plantarium Nova | Control Panel</title>
+  <link rel="icon" href="../favicon.ico" type="image/ico" />
+  <script src="scripts/jquery/jquery.3.1.1.min.js"></script>
+  <script src="scripts/d3/d3.v3.min.js"></script>
+
+  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/chart.css">
+  <link rel="stylesheet" href="style/font-awesome-4.7.0/css/font-awesome.min.css">
+
+
+  <script src="scripts/get_info.js"></script>
+  <script src="scripts/add_profile.js"></script>
+
+  <script src="scripts/chart.js"></script>
+
+
+</head>
+<body>
+
+ <div id="hide_scroll">
+    <div id="profile_wrapper">
+      <div id="prof_wrapper">
+      </div>
+
+      <div class="prof add">
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="main_wrapper">
+    <header>
+      <div class="logo">
+        <div class="brand">
+          ICARUS Plantarium Nova
+        </div>
+        <div class="cp">
+          Control Panel
+        </div>
+      </div>
+      
+      <div id="switch">
+        <span id="switch-inner"></span>
+      </div>
+    </header>
+
+    <div id="stat_wrapper">
+      <div id="chart"></div>
+      <div id="chart2"></div>
+
+      <ul class="levels">
+        <li class="temp">
+          <i class="fa fa-thermometer-three-quarters"></i>
+          <span><text id="t_value">0.0</text>&degC</span>
+        </li>
+        <li class="humid">
+          <i class="fa fa-tint" aria-hidden="true"></i>
+          <span><text id="h_value">0</text>%</span>
+        </li>
+      </ul>
+    </div>
+    <!-- Footer -->
+    <footer>
+        <div style="display: block; padding-right: 15px; padding-left: 50px; margin-right: auto; margin-left: auto; position: absolute; bottom: 50;">
+            <div style="display: block; margin-right: -15px; margin-left: -15px;">
+                <div style="display: block; position: relative; min-height: 1px; padding-right: 15px; padding-left: 15px;">
+                    <ul style="display: block; padding-left: 0; margin-left: -5px; list-style: none; margin-top: 0; margin-bottom: 10px;">
+                        <style>
+                        li {display: inline-block; padding-right: 5px; padding-left: 5px;}
+                        </style>
+                        <li>
+                            <a href="https://al2114.github.io/icarus" style="font-size: 14px; color: #337ab7; text-decoration: none;">Home</a>
+                        </li>
+                        <li>&sdot;</li>
+                        <li>
+                            <a href="mailto:benjamin.withers14@ic.ac.uk,andrew.li14@ic.ac.uk,nikolay.nikolov14@ic.ac.uk" style="font-size: 14px; color: #337ab7; text-decoration: none;">Contact</a>
+                        </li>
+                    </ul>
+                    <p style="margin: 15px 0 0; color: #777; font-size: 12px;"">Copyright &copy; ICARUS 2017. All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </div>
+
+</body>
+<script src="scripts/switch.js"></script>
+<script src="scripts/update_profile.js"></script>
+<script src="scripts/add_profile.js"></script>
+
+</html>

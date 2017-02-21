@@ -1,3 +1,30 @@
+## Architecture
+
+Our entire system consists of three components - an embedded system, a webserver, and a webclient.
+
+The embedded system runs on an ESP8266 WiFi module using micropython. The system connects to a WiFi network and a MQTT broker defined in the code, and subscribes and publishes to various topics, as defined bellow, to communicate with the webserver.
+
+The webserver runs on Node.js and acts as a handler to interface between the webclient and embedded device. It communicates with the embedded device via MQTT and handles HTTP requests received from the webclient. The responsibilities of the webserver include:
+
+- Storing:
+    - Profiles
+    - Sensor data
+    - Device state
+- Handling:
+    - From device:
+        - Initialisation request
+        - Sensor data
+    - From webclient:
+        - Request for profiles
+        - Creating new profiles
+        - Turning device on/off
+        - Current sensor data
+        - Setting profile for the device
+
+The webclient utilises the d3.js framework and AJAX to request and visualise the sensor data form the webserver in real time. Other services on the webclient include turning the device on/off, requesting the webserver to change the device profile, and create new profiles.
+
+
+
 ## JSON
 
 embedded to server - topic `esys/icarus/status`
