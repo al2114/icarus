@@ -31,31 +31,6 @@
     <![endif]-->
 
 
-	<script>
-		window.onscroll = function(e) {
-		  var toShow =  document.querySelectorAll('.showOnScroll');
-		  for(var i = 0; i < toShow.length; i++) {
-		    if(window.innerHeight - toShow[i].getBoundingClientRect().top - 100 > 0) {
-		      toShow[i].effect("slideFadein",{},500);
-		    } else {
-		      toShow[i].effect("slideFadein",{mode:'remove'},duration);
-		    }
-		  }
-		}
-	</script>
-
-	<style type="text/css">
-
-		.fadeIn{
-			padding-left: 0px;
-		}
-
-		.fadeOut{
-			padding-left: 50px;
-		}
-
-	</style>
-
 </head>
 
 <body>
@@ -137,7 +112,7 @@
 
             <div class="row">
                 <div>
-                    <p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                    <p align="center" style="margin-bottom: 50px"><iframe width="560" height="315" src="https://www.youtube.com/embed/rxJlT3u1yTE" frameborder="0" allowfullscreen></iframe>
                     </p>
                 </div>
             </div>
@@ -314,13 +289,7 @@
                 <div class="col-lg-6">
                     <ul class="list-inline banner-social-buttons">
                         <li>
-                            <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
-                        </li>
-                        <li>
                             <a href="https://github.com/al2114/icarus" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
-                        </li>
-                        <li>
-                            <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
                         </li>
                     </ul>
                 </div>
