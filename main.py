@@ -137,8 +137,10 @@ class GardenController():
         self.mqtt_client = None      # mqtt client object
         self.params_init = False
 
-        self.hum_data = array.array("f") 
-        self.temp_data = array.array("f") 
+        self.hum 0
+        self.hum_count 0
+        self.temp = 0
+        self.temp_count = 0
 
         # Private variables
         self._hum_on = False
@@ -228,20 +230,16 @@ class GardenController():
 
     def _resetTemp(self):
         """
-        Flush all temperature readings except for the last one
+        Reverse number of temperature measurements to 1
         """
-        temp = self.temp_data[-1]
-        self.temp_data = array.array("f")
-        self.temp_data.append(temp)
+        self.temp_count = 1
 
 
     def _resetHum(self):
         """
-        Flush all humidity readings except for the last one
+        Reverse number of humidity measurements to 1
         """
-        hum = self.hum_data[-1]
-        self.hum_data = array.array("f")
-        self.hum_data.append(hum)
+        self.hum_count = 1
 
 
     def publishAlarm(self, alarm_msg):
@@ -254,10 +252,7 @@ class GardenController():
 
 
     def getTemp(self):
-        """
-        Average the humidity readings since the last time status was published
-        """
-        return sum(self.temp_data)/len(self.temp_data)
+        return self.temp
 
 
     def measureTemp(self):
@@ -267,7 +262,10 @@ class GardenController():
         try:
             temp_raw = self._i2c.readfrom_mem(self._temp_sensor,3,2)
             temp = self._bytes2temp(temp_raw)
-            self.temp_data.append(temp)
+            
+            # Keep a rolling average
+            self.temp = (self.temp * self.temp_count + temp) / (self.temp_count + 1)
+            self.temp_count += 1
             return
         except OSError:
             print("Problem with Temperature Sensor")
@@ -276,10 +274,7 @@ class GardenController():
 
 
     def getHumidity(self):
-        """
-        Average the humidity readings since the last time status was published
-        """
-        return sum(self.hum_data)/len(self.hum_data)
+        return self.hum
 
 
     def measureHumidity(self):
@@ -292,7 +287,10 @@ class GardenController():
                 self._hum_sensor.measure()
                 #hum_sensor.temperature()
                 hum = self._hum_sensor.humidity()
-                self.hum_data.append(hum)
+                
+                # Keep a rolling average
+                self.hum = (self.hum * self.hum_count + hum) / (self.hum_count + 1)
+                self.hum_count += 1
                 return
             except OSError:
                 tries +=1
