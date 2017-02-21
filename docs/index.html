@@ -30,6 +30,32 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+
+	<script>
+		window.onscroll = function(e) {
+		  var toShow =  document.querySelectorAll('.showOnScroll');
+		  for(var i = 0; i < toShow.length; i++) {
+		    if(window.innerHeight - toShow[i].getBoundingClientRect().top - 100 > 0) {
+		      toShow[i].effect("slideFadein",{},500);
+		    } else {
+		      toShow[i].effect("slideFadein",{mode:'remove'},duration);
+		    }
+		  }
+		}
+	</script>
+
+	<style type="text/css">
+
+		.fadeIn{
+			padding-left: 0px;
+		}
+
+		.fadeOut{
+			padding-left: 50px;
+		}
+
+	</style>
+
 </head>
 
 <body>
@@ -101,9 +127,23 @@
     </div>
     <!-- /.intro-header -->
 
+    <!--  Video section -->
+    <div class="content-section-b">
+
+        <div class="container">
+
+            <div class="row">
+                <div>
+                    <p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
     <!-- Page Content -->
 
-    <div class="content-section-b">
+    <div class="content-section-a">
 
         <div class="container">
             <div class="row">
@@ -114,7 +154,7 @@
                     <p class="lead">Plantarium Nova enables you to grow any plant in a precisely controlled user-settable environment. Control temperature and humiditity to grow your plant perfectly. No more wilting and dying plants!</p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" src="img/enclosure_closed.png" alt="">
+                    <img class="img-responsive showOnScroll" src="img/enclosure_closed.png" alt="">
                 </div>
             </div>
 
@@ -124,7 +164,7 @@
     </div>
     <!-- /.content-section-a -->
 
-    <div class="content-section-a">
+    <div class="content-section-b">
 
         <div class="container">
 
@@ -146,7 +186,7 @@
     </div>
     <!-- /.content-section-b -->
 
-    <div class="content-section-b">
+    <div class="content-section-a">
 
         <div class="container">
 
@@ -169,7 +209,7 @@
     <!-- /.content-section-a -->
 
     <a  name="tools"></a>
-     <div class="content-section-a">
+     <div class="content-section-b">
 
         <div class="container">
 
@@ -203,7 +243,7 @@
     </div>
     <!-- /.content-section-a -->
 
-    <div class="content-section-b">
+    <div class="content-section-a">
 
         <div class="container">
 
@@ -223,21 +263,6 @@
         <!-- /.container -->
 
     </div>
-
-	<!--  Video section -->
-    <div class="content-section-a">
-
-        <div class="container">
-
-            <div class="row">
-                <div>
-                    <h2 class="section-heading" style="text-align: center;">Watch the Video!</h2>
-                    <p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
-                    </p>
-                </div>
-            </div>
-
-        </div>
         <!-- /.container -->
 
     </div>
